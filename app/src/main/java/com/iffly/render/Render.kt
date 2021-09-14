@@ -9,7 +9,7 @@ class Render {
      * which is packaged with this application.
      */
     external fun stringFromJNI(): String
-    external fun line(x0: Int, y0: Int, x1: Int, y1: Int, color: Int, bitmap: Bitmap)
+    external fun line(x0: Int, y0: Int, x1: Int, y1: Int, color: Long, bitmap: Bitmap)
 
     companion object {
         // Used to load the 'render' library on application startup.

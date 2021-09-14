@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         binding.sampleText.text = "123"
         val bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
         val render = Render()
-        render.line(10, 10, 200, 200, 0xffff0000.toInt(), bitmap)
+        render.line(10, 10, 200, 200, 0xffff0000, bitmap)
         binding.imageView.setImageBitmap(bitmap)
     }
 
