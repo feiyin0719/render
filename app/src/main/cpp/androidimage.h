@@ -5,24 +5,26 @@
 #include <math.h>
 #include <android/bitmap.h>
 #include "tgaimage.h"
+
 #ifndef RENDER_ANDROIDIMAGE_H
 #define RENDER_ANDROIDIMAGE_H
 
-class AndroidImage : public TGAImage {
+class AndroidImage {
 protected:
+    TGAImage *image;
+    AndroidBitmapInfo bitmapInfo;
     JNIEnv *env;
     jobject bitmap;
-    int32_t *bitmapPixs;
 public:
     AndroidImage(JNIEnv *env, jobject bitmap);
 
-    virtual void set(const int x, const int y, const TGAColor &c);
+    void flush();
 
-    virtual void unlockImage();
+    TGAImage *getImage() const;
 
-    virtual void lockImage();
-
+    ~AndroidImage();
 };
+
 
 #endif //RENDER_ANDROIDIMAGE_H
 

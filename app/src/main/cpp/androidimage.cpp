@@ -6,34 +6,36 @@
 AndroidImage::AndroidImage(JNIEnv *env, jobject bitmap) {
     this->env = env;
     this->bitmap = bitmap;
-    AndroidBitmapInfo bitmapInfo;
     if (ANDROID_BITMAP_RESULT_SUCCESS != AndroidBitmap_getInfo(env, bitmap, &bitmapInfo)) {
-        return;
+        throw std::bad_alloc();
     }
-    width = bitmapInfo.width;
-    height = bitmapInfo.height;
-    bitmapPixs = nullptr;
-
+    image = new TGAImage(bitmapInfo.width, bitmapInfo.height, 4);
 }
 
-
-void AndroidImage::set(int x, int y, const TGAColor &c) {
-    if (bitmapPixs != nullptr) {
-        bitmapPixs[y * width + x] = c.bgra[3] << 24 | c.bgra[2] | c.bgra[1] << 8 | c.bgra[0] << 16;
-    }
-}
-
-void AndroidImage::lockImage() {
+void AndroidImage::flush() {
     void *bitmapValue;
     if (ANDROID_BITMAP_RESULT_SUCCESS !=
         AndroidBitmap_lockPixels(env, bitmap, &bitmapValue
         )) {
-        return;
+        throw std::logic_error("get bitmap value fail");
     }
-    bitmapPixs = (int32_t *) bitmapValue;
+    int width = bitmapInfo.width;
+    int height = bitmapInfo.height;
+    int32_t *bitmapPixs = (int32_t *) bitmapValue;
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            TGAColor c = image->get(x, y);
+            bitmapPixs[y * width + x] =
+                    c.bgra[3] << 24 | c.bgra[2] | c.bgra[1] << 8 | c.bgra[0] << 16;
+        }
+    }
+    AndroidBitmap_unlockPixels(env, bitmap);
 }
 
-void AndroidImage::unlockImage() {
-    bitmapPixs = nullptr;
-    AndroidBitmap_unlockPixels(env, bitmap);
+TGAImage *AndroidImage::getImage() const {
+    return image;
+}
+
+AndroidImage::~AndroidImage() {
+    delete image;
 }

@@ -23,9 +23,9 @@ Java_com_iffly_render_Render_line(JNIEnv *env, jobject obj, int x0, int y0, int 
     AndroidImage androidImage(env, bitmap);
     TGAColor tgaColor(color >> 16 & 0xff, color >> 8 & 0xff, color & 0xff,
                       color >> 24 & 0xff);
-    androidImage.lockImage();
-    line(x0, y0, x1, y1, androidImage, tgaColor);
-    androidImage.unlockImage();
+
+    line(x0, y0, x1, y1, *androidImage.getImage(), tgaColor);
+    androidImage.flush();
 
 }
 
