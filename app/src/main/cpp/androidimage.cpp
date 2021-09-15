@@ -5,16 +5,9 @@
 
 AndroidImage::AndroidImage(JNIEnv *env, jobject bitmap) {
     this->env = env;
-    this->bitmap = bitmap;
+    this->bitmap = env->NewGlobalRef(bitmap);
     if (ANDROID_BITMAP_RESULT_SUCCESS != AndroidBitmap_getInfo(env, bitmap, &bitmapInfo)) {
         throw std::bad_alloc();
-    }
-
-    void *bitmapValue;
-    if (ANDROID_BITMAP_RESULT_SUCCESS !=
-        AndroidBitmap_lockPixels(env, bitmap, &bitmapValue
-        )) {
-        throw std::logic_error("get bitmap value fail");
     }
     this->bitmapPixs = nullptr;
 }

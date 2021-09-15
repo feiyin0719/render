@@ -1,6 +1,5 @@
 package com.iffly.render
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.iffly.render.databinding.ActivityMainBinding
@@ -17,10 +16,17 @@ class MainActivity : AppCompatActivity() {
 
         // Example of a call to a native method
         binding.sampleText.text = "123"
-        val bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
-        val render = Render()
-        render.line(10, 10, 200, 200, 0xffff0000, bitmap)
-        binding.imageView.setImageBitmap(bitmap)
+
+        val render = Render(200, 200)
+        render.lock()
+        render.line(10, 10, 100, 200, 0xffff0000)
+        render.line(10, 10, 200, 100, 0xff0000ff)
+        render.line(10, 10, 10, 100, 0xff00ffff)
+        render.line(10, 10, 100, 10, 0xffff00ff)
+        render.unlock()
+
+        binding.imageView.setImageBitmap(render.bitmap)
+        render.destroy()
     }
 
 
