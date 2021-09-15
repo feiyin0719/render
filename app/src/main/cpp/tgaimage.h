@@ -31,6 +31,11 @@ struct TGAColor {
     TGAColor(const std::uint8_t R, const std::uint8_t G, const std::uint8_t B,
              const std::uint8_t A = 255) : bgra{B, G, R, A}, bytespp(4) {}
 
+    TGAColor(const long color) : bgra{(std::uint8_t) (color & 0xff),
+                                      (std::uint8_t) (color >> 8 & 0xff),
+                                      (std::uint8_t) (color >> 16 & 0xff),
+                                      (std::uint8_t) (color >> 24 & 0xff)}, bytespp(4) {}
+
     TGAColor(const std::uint8_t v) : bgra{v, 0, 0, 0}, bytespp(1) {}
 
     TGAColor(const std::uint8_t *p, const std::uint8_t bpp) : bgra{0, 0, 0, 0}, bytespp(bpp) {
@@ -45,6 +50,11 @@ struct TGAColor {
         double clamped = std::max(0., std::min(intensity, 1.));
         for (int i = 0; i < 4; i++) res.bgra[i] = bgra[i] * clamped;
         return res;
+    }
+
+public:
+    long getLongColor() const {
+        return bgra[3] << 24 | bgra[2] | bgra[1] << 8 | bgra[0] << 16;
     }
 };
 
@@ -82,6 +92,10 @@ public:
     virtual TGAColor get(const int x, const int y) const;
 
     virtual void set(const int x, const int y, const TGAColor &c);
+
+    virtual void lock();
+
+    virtual void unlock();
 
     int get_width() const;
 

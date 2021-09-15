@@ -9,20 +9,23 @@
 #ifndef RENDER_ANDROIDIMAGE_H
 #define RENDER_ANDROIDIMAGE_H
 
-class AndroidImage {
+class AndroidImage : public TGAImage {
 protected:
-    TGAImage *image;
     AndroidBitmapInfo bitmapInfo;
     JNIEnv *env;
     jobject bitmap;
+    int32_t *bitmapPixs;
 public:
     AndroidImage(JNIEnv *env, jobject bitmap);
 
-    void flush();
+    virtual TGAColor get(const int x, const int y) const;
 
-    TGAImage *getImage() const;
+    virtual void set(const int x, const int y, const TGAColor &c);
 
-    ~AndroidImage();
+    virtual void lock();
+
+    virtual void unlock();
+
 };
 
 
