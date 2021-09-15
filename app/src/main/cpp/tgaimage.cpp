@@ -303,12 +303,3 @@ void TGAImage::scale(int w, int h) {
     height = h;
 }
 
-
-void TGAImage::lockImage() {
-
-}
-
-void TGAImage::unlockImage() {
-
-}
-

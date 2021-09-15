@@ -83,10 +83,6 @@ public:
 
     virtual void set(const int x, const int y, const TGAColor &c);
 
-    virtual void unlockImage();
-
-    virtual void lockImage();
-
     int get_width() const;
 
     int get_height() const;

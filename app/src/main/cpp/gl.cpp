@@ -13,7 +13,6 @@ void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color) {
         std::swap(x1, x0);
         std::swap(y1, y0);
     }
-    image.lockImage();
     for (int x = x0; x < x1; ++x) {
         float t = (x - x0) / (float) (x1 - x0);
         int y = y0 + (y1 - y0) * t;
@@ -23,5 +22,4 @@ void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color) {
             image.set(x, y, color);
         }
     }
-    image.unlockImage();
 }
