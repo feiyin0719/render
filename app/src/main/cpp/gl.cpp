@@ -36,7 +36,7 @@ namespace GL {
         }
     }
 
-    vec3 barycentric(vec2 a, vec2 b, vec2 c, vec2 p) {
+    vec3f barycentric(vec2 a, vec2 b, vec2 c, vec2 p) {
         vec3 s[2];
         for (int i = 2; i--;) {
             s[i][0] = c[i] - a[i];
@@ -44,10 +44,10 @@ namespace GL {
             s[i][2] = a[i] - p[i];
         }
         vec3 u = cross(s[0], s[1]);
-        if (std::abs(u[2]) >
-            1e-2) // dont forget that u[2] is integer. If it is zero then triangle ABC is degenerate
-            return vec3(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
-        return vec3(-1, 1, 1);
+        if (u[2] !=
+            0)
+            return vec3f(1.0f - (u.x + u.y) / u.z, 1.0f * u.y / u.z, 1.0f * u.x / u.z);
+        return vec3f(-1, 1, 1);
     }
 
     void triangle(vec2 *u, TGAImage &image, TGAColor &color) {
@@ -56,14 +56,14 @@ namespace GL {
         vec2 clamp(image.get_width() - 1, image.get_height() - 1);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 2; ++j) {
-                bmin[j] = std::max(std::min(u[i][j], bmin[j]), 0.0);
+                bmin[j] = std::max(std::min(u[i][j], bmin[j]), 0);
                 bmax[j] = std::min(clamp[j], std::max(bmax[j], u[i][j]));
             }
         }
         vec2 p;
         for (p.y = bmin.y; p.y <= bmax.y; ++p.y) {
             for (p.x = bmin.x; p.x <= bmax.x; ++p.x) {
-                vec3 s = barycentric(u[0], u[1], u[2], p);
+                vec3f s = barycentric(u[0], u[1], u[2], p);
                 if (s.x < 0 || s.y < 0 || s.z < 0)continue;
                 image.set(p.x, p.y, color);
             }
