@@ -11,8 +11,12 @@ Render::Render(int width, int height) {
 
 Render::Render() {}
 
-void Render::line(int x0, int y0, int x1, int y1, TGAColor color) {
+void Render::line(int x0, int y0, int x1, int y1, TGAColor &color) {
     GL::line(x0, y0, x1, y1, *(this->image), color);
+}
+
+void Render::triangle(vec2 *u, TGAColor &color) {
+    GL::triangle(u, *(this->image), color);
 }
 
 void Render::lock() {

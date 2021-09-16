@@ -9,6 +9,9 @@ AndroidImage::AndroidImage(JNIEnv *env, jobject bitmap) {
     if (ANDROID_BITMAP_RESULT_SUCCESS != AndroidBitmap_getInfo(env, bitmap, &bitmapInfo)) {
         throw std::bad_alloc();
     }
+    this->width = bitmapInfo.width;
+    this->height = bitmapInfo.height;
+    this->bytespp = 4;
     this->bitmapPixs = nullptr;
 }
 

@@ -24,7 +24,8 @@ Java_com_iffly_render_Render_line(JNIEnv *env, jobject obj, jlong render, int x0
                                   jlong color
 
 ) {
-    ((Render *) render)->line(x0, y0, x1, y1, TGAColor((long) color));
+    TGAColor tgaColor((long) color);
+    ((Render *) render)->line(x0, y0, x1, y1, tgaColor);
 }
 
 
@@ -47,4 +48,13 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_iffly_render_Render_destroy(JNIEnv *env, jobject thiz, jlong render) {
     delete ((Render *) render);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_iffly_render_Render_triangle(JNIEnv *env, jobject thiz, jlong render, jint x0,
+                                      jint y0, jint x1, jint y1, jint x2, jint y2, jlong color) {
+    TGAColor tgaColor((long) color);
+    vec2 u[3] = {vec2(x0, y0), vec2(x1, y1), vec2(x2, y2)};
+    ((Render *) render)->triangle(u,
+                                  tgaColor);
 }
