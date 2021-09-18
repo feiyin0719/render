@@ -1,5 +1,6 @@
 package com.iffly.render
 
+import android.content.res.AssetManager
 import android.graphics.Bitmap
 
 class Render(val width: Int, val height: Int) {
@@ -28,6 +29,10 @@ class Render(val width: Int, val height: Int) {
         triangle(nativeAddr, x0, y0, x1, y1, x2, y2, color)
     }
 
+    fun renderObject(assetManager: AssetManager, fileName: String) {
+        renderObject(nativeAddr, assetManager, fileName)
+    }
+
     fun lock() {
         lock(nativeAddr)
     }
@@ -53,6 +58,8 @@ class Render(val width: Int, val height: Int) {
         y2: Int,
         color: Long
     )
+
+    external fun renderObject(nativeAddr: Long, assetManager: AssetManager, fileName: String)
 
     external fun lock(nativeAddr: Long)
     external fun unlock(nativeAddr: Long)

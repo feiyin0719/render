@@ -2,12 +2,22 @@
 #include <string>
 #include <math.h>
 #include <android/bitmap.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
 #include "tgaimage.h"
 #include "androidimage.h"
 #include "gl.h"
 #include "render.h"
 #include "androidrender.h"
+#include "model.h"
+#include <android/log.h>
 
+#define TAG "HELLO"
+#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG , TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO , TAG, __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN , TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR , TAG, __VA_ARGS__)
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_iffly_render_Render_stringFromJNI(
         JNIEnv *env,
@@ -57,4 +67,48 @@ Java_com_iffly_render_Render_triangle(JNIEnv *env, jobject thiz, jlong render, j
     vec2 u[3] = {vec2(x0, y0), vec2(x1, y1), vec2(x2, y2)};
     ((Render *) render)->triangle(u,
                                   tgaColor);
+}
+
+char *readFromAssets(JNIEnv *env, jobject assetManager, jstring filename) {
+
+    AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
+    if (mgr == NULL) {
+
+        return nullptr;
+    }
+
+
+    /*获取文件名并打开*/
+    jboolean iscopy;
+    const char *mfile = env->GetStringUTFChars(filename, &iscopy);
+    AAsset *asset = AAssetManager_open(mgr, mfile, AASSET_MODE_UNKNOWN);
+    env->ReleaseStringUTFChars(filename, mfile);
+    if (asset == NULL) {
+
+        return nullptr;
+    }
+    /*获取文件大小*/
+    off_t bufferSize = AAsset_getLength(asset);
+
+    char *buffer = (char *) malloc(bufferSize + 1);
+    buffer[bufferSize] = 0;
+    int numBytesRead = AAsset_read(asset, buffer, bufferSize);
+    AAsset_close(asset);
+    return buffer;
+
+
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong render,
+                                          jobject asset_manager, jstring file_name) {
+    char *buffer = readFromAssets(env, asset_manager, file_name);
+
+    std::string data(buffer);
+    free(buffer);
+
+    Model model(data);
+
 }

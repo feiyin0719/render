@@ -19,11 +19,12 @@ class MainActivity : AppCompatActivity() {
 
         val render = Render(200, 200)
         render.lock()
-        render.line(10, 10, 100, 200, 0xffff0000)
-        render.line(10, 10, 200, 100, 0xff0000ff)
-        render.line(10, 10, 10, 100, 0xff00ffff)
-        render.line(10, 10, 100, 10, 0xffff00ff)
-        render.triangle(10, 10, 30, 10, 30, 50, 0xffff0000)
+//        render.line(10, 10, 100, 200, 0xffff0000)
+//        render.line(10, 10, 200, 100, 0xff0000ff)
+//        render.line(10, 10, 10, 100, 0xff00ffff)
+//        render.line(10, 10, 100, 10, 0xffff00ff)
+//        render.triangle(10, 10, 30, 10, 30, 50, 0xffff0000)
+        render.renderObject(assetManager = assets, fileName = "african_head.obj")
         render.unlock()
 
         binding.imageView.setImageBitmap(render.bitmap)
