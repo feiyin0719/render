@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         // Example of a call to a native method
         binding.sampleText.text = "123"
 
-        val render = Render(200, 200)
+        val render = Render(600, 600)
         render.lock()
 //        render.line(10, 10, 100, 200, 0xffff0000)
 //        render.line(10, 10, 200, 100, 0xff0000ff)

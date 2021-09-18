@@ -25,6 +25,14 @@ public:
 
     virtual void unlock();
 
+    virtual int getWidth() {
+        return image->get_width();
+    }
+
+    virtual int getHeight() {
+        return image->get_height();
+    }
+
     ~Render();
 
 };

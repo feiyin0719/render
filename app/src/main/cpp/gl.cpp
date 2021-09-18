@@ -69,4 +69,8 @@ namespace GL {
             }
         }
     }
+
+    vec2 world2screen(vec3f v, int width, int height) {
+        return vec2(int((v.x + 1.) * width / 2.), int((v.y + 1.) * height / 2.));
+    }
 }

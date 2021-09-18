@@ -111,4 +111,24 @@ Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong rende
 
     Model model(data);
 
+    for (int i = 0; i < model.nfaces(); i++) {
+        std::vector<int> face = model.face(i);
+        vec3f world_coords[3];
+        vec2 screen_coords[3];
+        for (int j = 0; j < 3; j++) {
+            world_coords[j] = model.vert(face[j]);
+
+
+            screen_coords[j] = GL::world2screen(world_coords[j], ((Render *) render)->getWidth(),
+                                                ((Render *) render)->getHeight());
+        }
+
+        int r = std::rand() % 255;
+        int g = std::rand() % 255;
+        int b = std::rand() % 255;
+        TGAColor color(r, g, b, 255);
+
+        ((Render *) render)->triangle(screen_coords, color);
+    }
+
 }
