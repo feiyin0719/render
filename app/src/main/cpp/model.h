@@ -41,9 +41,9 @@ public:
 
     std::vector<int> face(int idx) {
         std::vector<int> v;
-        v.push_back(facet_vrt_[idx]);
-        v.push_back(facet_tex_[idx]);
-        v.push_back(facet_nrm_[idx]);
+        v.push_back(facet_vrt_[idx * 3]);
+        v.push_back(facet_vrt_[idx * 3 + 1]);
+        v.push_back(facet_vrt_[idx * 3 + 2]);
         return v;
     }
 };
