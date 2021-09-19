@@ -14,12 +14,16 @@ protected:
 
     Render();
 
+    float *zbuffer;
+
+    void init();
+
 public:
     Render(int width, int height);
 
     virtual void line(int x0, int y0, int x1, int y1, TGAColor &color);
 
-    virtual void triangle(vec2 *u, TGAColor &color);
+    virtual void triangle(vec3 *u, TGAColor &color);
 
     virtual void lock();
 

@@ -7,5 +7,6 @@
 AndroidRender::AndroidRender(JNIEnv *env, jobject bitmap) : Render() {
 
     image = new AndroidImage(env, bitmap);
+    init();
 }
 

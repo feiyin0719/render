@@ -36,7 +36,7 @@ namespace GL {
         }
     }
 
-    vec3f barycentric(vec2 a, vec2 b, vec2 c, vec2 p) {
+    vec3f barycentric(vec3 a, vec3 b, vec3 c, vec3 p) {
         vec3 s[2];
         for (int i = 2; i--;) {
             s[i][0] = c[i] - a[i];
@@ -50,27 +50,35 @@ namespace GL {
         return vec3f(-1, 1, 1);
     }
 
-    void triangle(vec2 *u, TGAImage &image, TGAColor &color) {
-        vec2 bmin(image.get_width() - 1, image.get_height() - 1);
+    void triangle(vec3 *u, float *zbuffer, TGAImage &image, TGAColor &color) {
+        int width = image.get_width();
+        int height = image.get_height();
+
+        vec2 bmin(width - 1, height - 1);
         vec2 bmax(0, 0);
-        vec2 clamp(image.get_width() - 1, image.get_height() - 1);
+        vec2 clamp(width - 1, height - 1);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 2; ++j) {
                 bmin[j] = std::max(std::min(u[i][j], bmin[j]), 0);
                 bmax[j] = std::min(clamp[j], std::max(bmax[j], u[i][j]));
             }
         }
-        vec2 p;
+        vec3 p;
         for (p.y = bmin.y; p.y <= bmax.y; ++p.y) {
             for (p.x = bmin.x; p.x <= bmax.x; ++p.x) {
                 vec3f s = barycentric(u[0], u[1], u[2], p);
                 if (s.x < 0 || s.y < 0 || s.z < 0)continue;
-                image.set(p.x, p.y, color);
+                p.z = 0;
+                for (int i = 0; i < 3; i++) p.z += u[i][2] * s[i];
+                if (zbuffer[p.x + p.y * width] < p.z) {
+                    image.set(p.x, p.y, color);
+                    zbuffer[p.x + p.y * width] = p.z;
+                }
             }
         }
     }
 
-    vec2 world2screen(vec3f v, int width, int height) {
-        return vec2(int((v.x + 1.) * width / 2.), int((v.y + 1.) * height / 2.));
+    vec3 world2screen(vec3f v, int width, int height) {
+        return vec3(int((v.x + 1.) * width / 2. + 0.5), int((v.y + 1.) * height / 2. + 0.5), v.z);
     }
 }
