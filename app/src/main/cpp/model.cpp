@@ -3,6 +3,7 @@
 #include <sstream>
 #include "model.h"
 #include <android/log.h>
+#include "assetsutil.h"
 
 #define TAG "HELLO"
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
@@ -10,6 +11,7 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO , TAG, __VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN , TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR , TAG, __VA_ARGS__)
+
 Model::Model(const std::string data)
         : verts_(), uv_(), norms_(), facet_vrt_(), facet_tex_(), facet_nrm_(), diffusemap_(),
           normalmap_(), specularmap_() {
@@ -19,8 +21,8 @@ Model::Model(const std::string data)
     while (!in.eof()) {
 
         std::getline(in, line);
-        LOGI("read:%s",line.c_str());
-        if(line.empty())continue;
+        LOGI("read:%s", line.c_str());
+        if (line.empty())continue;
         std::istringstream iss(line.c_str());
         char trash;
         if (!line.compare(0, 2, "v ")) {
@@ -40,8 +42,7 @@ Model::Model(const std::string data)
             vec2f uv;
             for (int i = 0; i < 2; i++) iss >> uv[i];
             uv_.push_back(uv);
-        }
-        else if (!line.compare(0, 2, "f ")) {
+        } else if (!line.compare(0, 2, "f ")) {
             int f, t, n;
             iss >> trash;
             int cnt = 0;
@@ -74,7 +75,6 @@ int Model::nfaces() const {
 }
 
 
-
 vec3f Model::vert(const int i) const {
     return verts_[i];
 }
@@ -83,13 +83,13 @@ vec3f Model::vert(const int iface, const int nthvert) const {
     return verts_[facet_vrt_[iface * 3 + nthvert]];
 }
 
-void Model::load_texture(std::string filename, const std::string suffix, TGAImage &img) {
-    size_t dot = filename.find_last_of(".");
-    if (dot == std::string::npos) return;
-    std::string texfile = filename.substr(0, dot) + suffix;
-    std::cerr << "texture file " << texfile << " loading "
-              << (img.read_tga_file(texfile.c_str()) ? "ok" : "failed") << std::endl;
+void Model::load_texture(std::string data, TGAImage &img) {
+    img.read_tga_file(data);
     img.flip_vertically();
+}
+
+void Model::load_diff_texture(const std::string data) {
+    load_texture(data, diffusemap_);
 }
 
 TGAColor Model::diffuse(const vec2f &uvf) const {

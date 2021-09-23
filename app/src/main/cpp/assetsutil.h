@@ -6,7 +6,7 @@
 #ifndef RENDER_ASSETSUTIL_H
 #define RENDER_ASSETSUTIL_H
 namespace AssetsUtil {
-    char *readFromAssets(JNIEnv *env, jobject assetManager, jstring filename);
+    char *readFromAssets(JNIEnv *env, jobject assetManager, const char *mfile);
 }
 
 

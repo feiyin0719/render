@@ -6,16 +6,15 @@
 #include <jni.h>
 
 namespace AssetsUtil {
-    char *readFromAssets(JNIEnv *env, jobject assetManager, jstring filename) {
+    char *readFromAssets(JNIEnv *env, jobject assetManager, const char *mfile) {
         AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
         if (mgr == NULL) {
             return nullptr;
         }
         /*获取文件名并打开*/
-        jboolean iscopy;
-        const char *mfile = env->GetStringUTFChars(filename, &iscopy);
+
         AAsset *asset = AAssetManager_open(mgr, mfile, AASSET_MODE_UNKNOWN);
-        env->ReleaseStringUTFChars(filename, mfile);
+
         if (asset == NULL) {
             return nullptr;
         }

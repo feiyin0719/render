@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <fstream>
 #include <vector>
+#include <sstream>
 
 #pragma pack(push, 1)
 struct TGA_Header {
@@ -65,7 +66,7 @@ protected:
     int height;
     int bytespp;
 
-    bool load_rle_data(std::ifstream &in);
+    bool load_rle_data(std::stringstream &in);
 
     bool unload_rle_data(std::ofstream &out) const;
 
@@ -78,7 +79,7 @@ public:
 
     TGAImage(const int w, const int h, const int bpp);
 
-    bool read_tga_file(const std::string filename);
+    bool read_tga_file(const std::string data);
 
     bool write_tga_file(const std::string filename, const bool vflip = true,
                         const bool rle = true) const;

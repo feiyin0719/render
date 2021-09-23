@@ -77,12 +77,17 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong render,
                                           jobject asset_manager, jstring file_name) {
-    char *buffer = AssetsUtil::readFromAssets(env, asset_manager, file_name);
+    jboolean iscopy;
+    const char *mfile = env->GetStringUTFChars(file_name, &iscopy);
+    char *buffer = AssetsUtil::readFromAssets(env, asset_manager, mfile);
+    env->ReleaseStringUTFChars(file_name, mfile);
 
     std::string data(buffer);
     delete buffer;
 
     Model model(data);
+    model.load_diff_texture(
+            AssetsUtil::readFromAssets(env, asset_manager, "african_head_diffuse.tga"));
     vec3f light(0, 0, -1);
     for (int i = 0; i < model.nfaces(); i++) {
         vec3f world_coords[3];
