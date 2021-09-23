@@ -35,12 +35,12 @@ Model::Model(const std::string data)
 //            for (int i = 0; i < 3; i++) iss >> n[i];
 //            norms_.push_back(n.normalize());
 //        }
-//        else if (!line.compare(0, 3, "vt ")) {
-//            iss >> trash >> trash;
-//            vec2f uv;
-//            for (int i = 0; i < 2; i++) iss >> uv[i];
-//            uv_.push_back(uv);
-//        }
+        else if (!line.compare(0, 3, "vt ")) {
+            iss >> trash >> trash;
+            vec2f uv;
+            for (int i = 0; i < 2; i++) iss >> uv[i];
+            uv_.push_back(uv);
+        }
         else if (!line.compare(0, 2, "f ")) {
             int f, t, n;
             iss >> trash;

@@ -39,13 +39,6 @@ public:
 
     double specular(const vec2f &uv) const;
 
-    std::vector<int> face(int idx) {
-        std::vector<int> v;
-        v.push_back(facet_vrt_[idx * 3]);
-        v.push_back(facet_vrt_[idx * 3 + 1]);
-        v.push_back(facet_vrt_[idx * 3 + 2]);
-        return v;
-    }
 };
 
 #endif //__MODEL_H__
