@@ -17,7 +17,7 @@ private:
     TGAImage diffusemap_;         // diffuse color texture
     TGAImage normalmap_;          // normal map texture
     TGAImage specularmap_;        // specular map texture
-    void load_texture(const std::string data, TGAImage &img);
+    void load_texture(const std::string filename, const std::string suffix, TGAImage &img);
 
 public:
     Model(const std::string data);
@@ -39,7 +39,6 @@ public:
 
     double specular(const vec2f &uv) const;
 
-    void load_diff_texture(const std::string data);
 
 };
 

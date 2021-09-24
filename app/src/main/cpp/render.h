@@ -3,6 +3,7 @@
 //
 #include "tgaimage.h"
 #include "geometry.h"
+#include "model.h"
 
 #ifndef RENDER_RENDER_H
 #define RENDER_RENDER_H
@@ -23,7 +24,9 @@ public:
 
     virtual void line(int x0, int y0, int x1, int y1, TGAColor &color);
 
-    virtual void triangle(vec3 *u, TGAColor &color);
+    virtual void triangle(vec3f *u, TGAColor &color);
+
+    virtual void triangle(vec3f *u, vec2f *texts, Model *model);
 
     virtual void lock();
 

@@ -1,23 +1,33 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <sstream>
 #include "tgaimage.h"
+#include <android/log.h>
+
+#define TAG "HELLO"
+#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG , TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO , TAG, __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN , TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR , TAG, __VA_ARGS__)
 
 TGAImage::TGAImage() : data(), width(0), height(0), bytespp(0) {}
 
 TGAImage::TGAImage(const int w, const int h, const int bpp) : data(w * h * bpp, 0), width(w),
                                                               height(h), bytespp(bpp) {}
 
-bool TGAImage::read_tga_file(const std::string imageData) {
-    std::stringstream in(imageData);
-
-    if (in.fail()) {
+bool TGAImage::read_tga_file(const std::string filename) {
+    std::ifstream in;
+    in.open(filename, std::ios::binary);
+    if (!in.is_open()) {
+        std::cerr << "can't open file " << filename << "\n";
+        in.close();
         return false;
     }
     TGA_Header header;
     in.read(reinterpret_cast<char *>(&header), sizeof(header));
     if (!in.good()) {
+        in.close();
         std::cerr << "an error occured while reading the header\n";
         return false;
     }
@@ -25,6 +35,7 @@ bool TGAImage::read_tga_file(const std::string imageData) {
     height = header.height;
     bytespp = header.bitsperpixel >> 3;
     if (width <= 0 || height <= 0 || (bytespp != GRAYSCALE && bytespp != RGB && bytespp != RGBA)) {
+        in.close();
         std::cerr << "bad bpp (or width/height) value\n";
         return false;
     }
@@ -33,18 +44,18 @@ bool TGAImage::read_tga_file(const std::string imageData) {
     if (3 == header.datatypecode || 2 == header.datatypecode) {
         in.read(reinterpret_cast<char *>(data.data()), nbytes);
         if (!in.good()) {
-
+            in.close();
             std::cerr << "an error occured while reading the data\n";
             return false;
         }
     } else if (10 == header.datatypecode || 11 == header.datatypecode) {
         if (!load_rle_data(in)) {
-
+            in.close();
             std::cerr << "an error occured while reading the data\n";
             return false;
         }
     } else {
-
+        in.close();
         std::cerr << "unknown file format " << (int) header.datatypecode << "\n";
         return false;
     }
@@ -53,11 +64,11 @@ bool TGAImage::read_tga_file(const std::string imageData) {
     if (header.imagedescriptor & 0x10)
         flip_horizontally();
     std::cerr << width << "x" << height << "/" << bytespp * 8 << "\n";
-
+    in.close();
     return true;
 }
 
-bool TGAImage::load_rle_data(std::stringstream &in) {
+bool TGAImage::load_rle_data(std::ifstream &in) {
     size_t pixelcount = width * height;
     size_t currentpixel = 0;
     size_t currentbyte = 0;

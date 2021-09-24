@@ -12,17 +12,15 @@
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN , TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR , TAG, __VA_ARGS__)
 
-Model::Model(const std::string data)
+Model::Model(const std::string filename)
         : verts_(), uv_(), norms_(), facet_vrt_(), facet_tex_(), facet_nrm_(), diffusemap_(),
           normalmap_(), specularmap_() {
-    std::stringstream in(data);
+    std::ifstream in;
+    in.open(filename, std::ifstream::in);
     if (in.fail()) return;
     std::string line;
     while (!in.eof()) {
-
         std::getline(in, line);
-        LOGI("read:%s", line.c_str());
-        if (line.empty())continue;
         std::istringstream iss(line.c_str());
         char trash;
         if (!line.compare(0, 2, "v ")) {
@@ -30,14 +28,12 @@ Model::Model(const std::string data)
             vec3f v;
             for (int i = 0; i < 3; i++) iss >> v[i];
             verts_.push_back(v);
-        }
-//        else if (!line.compare(0, 3, "vn ")) {
-//            iss >> trash >> trash;
-//            vec3f n;
-//            for (int i = 0; i < 3; i++) iss >> n[i];
-//            norms_.push_back(n.normalize());
-//        }
-        else if (!line.compare(0, 3, "vt ")) {
+        } else if (!line.compare(0, 3, "vn ")) {
+            iss >> trash >> trash;
+            vec3f n;
+            for (int i = 0; i < 3; i++) iss >> n[i];
+            norms_.push_back(n.normalize());
+        } else if (!line.compare(0, 3, "vt ")) {
             iss >> trash >> trash;
             vec2f uv;
             for (int i = 0; i < 2; i++) iss >> uv[i];
@@ -53,15 +49,16 @@ Model::Model(const std::string data)
                 cnt++;
             }
             if (3 != cnt) {
-//                std::cerr << "Error: the obj file is supposed to be triangulated" << std::endl;
-
+                std::cerr << "Error: the obj file is supposed to be triangulated" << std::endl;
+                in.close();
                 return;
             }
         }
     }
-
-//    std::cerr << "# v# " << nverts() << " f# "  << nfaces() << " vt# " << uv_.size() << " vn# " << norms_.size() << std::endl;
-//    load_texture(filename, "_diffuse.tga",    diffusemap_);
+    in.close();
+    std::cerr << "# v# " << nverts() << " f# " << nfaces() << " vt# " << uv_.size() << " vn# "
+              << norms_.size() << std::endl;
+    load_texture(filename, "_diffuse.tga", diffusemap_);
 //    load_texture(filename, "_nm_tangent.tga", normalmap_);
 //    load_texture(filename, "_spec.tga",       specularmap_);
 }
@@ -83,17 +80,19 @@ vec3f Model::vert(const int iface, const int nthvert) const {
     return verts_[facet_vrt_[iface * 3 + nthvert]];
 }
 
-void Model::load_texture(std::string data, TGAImage &img) {
-    img.read_tga_file(data);
+void Model::load_texture(std::string filename, const std::string suffix, TGAImage &img) {
+    size_t dot = filename.find_last_of(".");
+    if (dot == std::string::npos) return;
+    std::string texfile = filename.substr(0, dot) + suffix;
+    std::cerr << "texture file " << texfile << " loading "
+              << (img.read_tga_file(texfile.c_str()) ? "ok" : "failed") << std::endl;
     img.flip_vertically();
 }
 
-void Model::load_diff_texture(const std::string data) {
-    load_texture(data, diffusemap_);
-}
-
 TGAColor Model::diffuse(const vec2f &uvf) const {
-    return diffusemap_.get(uvf[0] * diffusemap_.get_width(), uvf[1] * diffusemap_.get_height());
+    TGAColor color = diffusemap_.get(uvf[0] * diffusemap_.get_width(),
+                                     uvf[1] * diffusemap_.get_height());
+    return color;
 }
 
 vec3f Model::normal(const vec2f &uvf) const {

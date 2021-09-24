@@ -55,7 +55,13 @@ struct TGAColor {
 
 public:
     long getLongColor() const {
-        return bgra[3] << 24 | bgra[2] | bgra[1] << 8 | bgra[0] << 16;
+        if (bytespp == 3)
+            return 0xff << 24 | bgra[2] | bgra[1] << 8 | bgra[0] << 16;
+        else if (bytespp == 0) {
+            return 0xff000000;
+        } else
+            return bgra[3] << 24 | bgra[2] | bgra[1] << 8 | bgra[0] << 16;
+
     }
 };
 
@@ -66,7 +72,7 @@ protected:
     int height;
     int bytespp;
 
-    bool load_rle_data(std::stringstream &in);
+    bool load_rle_data(std::ifstream &in);
 
     bool unload_rle_data(std::ofstream &out) const;
 
@@ -79,7 +85,7 @@ public:
 
     TGAImage(const int w, const int h, const int bpp);
 
-    bool read_tga_file(const std::string data);
+    bool read_tga_file(const std::string filename);
 
     bool write_tga_file(const std::string filename, const bool vflip = true,
                         const bool rle = true) const;

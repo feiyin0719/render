@@ -6,6 +6,8 @@ import android.graphics.Matrix
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.iffly.render.databinding.ActivityMainBinding
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +22,14 @@ class MainActivity : AppCompatActivity() {
         // Example of a call to a native method
         binding.sampleText.text = "render"
         Thread {
+            val file = File(externalCacheDir, "african_head.obj")
+            if (!file.exists()) {
+                copyAssetsToCache("african_head.obj", file)
+            }
+            val textureFile = File(externalCacheDir, "african_head_diffuse.tga")
+            if (!textureFile.exists()) {
+                copyAssetsToCache("african_head_diffuse.tga", textureFile)
+            }
             val render: Render = Render(600, 600)
             render.lock()
 //        render.line(10, 10, 100, 200, 0xffff0000)
@@ -27,7 +37,9 @@ class MainActivity : AppCompatActivity() {
 //        render.line(10, 10, 10, 100, 0xff00ffff)
 //        render.line(10, 10, 100, 10, 0xffff00ff)
 //        render.triangle(10, 10, 30, 10, 30, 50, 0xffff0000)
-            render.renderObject(assetManager = assets, fileName = "african_head.obj")
+            render.renderObject(
+                fileName = file.absolutePath,
+            )
             render.unlock()
             val bitmap = Bitmap.createBitmap(
                 render.bitmap.width,
@@ -51,6 +63,22 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
 
         super.onDestroy()
+    }
+
+    fun copyAssetsToCache(fileName: String, file: File) {
+
+        val input = assets.open(fileName)
+        val output = FileOutputStream(file)
+        val buffer = ByteArray(1024)
+        var byteCount = 0
+        while ((input.read(buffer).also { byteCount = it }) != -1) {// 循环从输入流读取
+            // buffer字节
+            output.write(buffer, 0, byteCount)// 将读取的输入流写入到输出流
+        }
+        output.flush();// 刷新缓冲区
+        input.close()
+        output.close()
+
     }
 
 

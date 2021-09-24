@@ -23,8 +23,12 @@ void Render::line(int x0, int y0, int x1, int y1, TGAColor &color) {
     GL::line(x0, y0, x1, y1, *(this->image), color);
 }
 
-void Render::triangle(vec3 *u, TGAColor &color) {
+void Render::triangle(vec3f *u, TGAColor &color) {
     GL::triangle(u, zbuffer, *(this->image), color);
+}
+
+void Render::triangle(vec3f *u, vec2f *texts, Model *model) {
+    GL::triangle(u, zbuffer, *(this->image), texts, model);
 }
 
 void Render::lock() {
