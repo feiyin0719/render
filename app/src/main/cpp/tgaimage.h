@@ -59,8 +59,9 @@ public:
             return 0xff << 24 | bgra[2] | bgra[1] << 8 | bgra[0] << 16;
         else if (bytespp == 0) {
             return 0xff000000;
-        } else
+        } else{
             return bgra[3] << 24 | bgra[2] | bgra[1] << 8 | bgra[0] << 16;
+        }
 
     }
 };
