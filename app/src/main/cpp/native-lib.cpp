@@ -12,6 +12,7 @@
 #include "model.h"
 #include "assetsutil.h"
 #include "androidlog.h"
+
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_iffly_render_Render_stringFromJNI(
         JNIEnv *env,
@@ -63,9 +64,6 @@ Java_com_iffly_render_Render_triangle(JNIEnv *env, jobject thiz, jlong render, j
                                   tgaColor);
 }
 
-
-
-
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong render,
@@ -74,17 +72,24 @@ Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong rende
     const char *mfile = env->GetStringUTFChars(file_name, &iscopy);
     std::string data(mfile);
     env->ReleaseStringUTFChars(file_name, mfile);
+    int width = ((Render *) render)->getWidth();
+    int height = ((Render *) render)->getHeight();
+    const vec3f light_dir(1, 1, 1); // light source
+    const vec3f eye(1, 1, 3); // camera position
+    const vec3f center(0, 0, 0); // camera direction
+    const vec3f up(0, 1, 0); // camera up vector
+    GL::lookat(eye, center, up);                            // build the ModelView matrix
+    GL::viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4); // build the Viewport matrix
+    GL::projection(-1.f / (eye - center).norm());               // build the Projection matrix
 
     Model model(data);
-    vec3f light(0, 0, -1);
     for (int i = 0; i < model.nfaces(); i++) {
         vec3f world_coords[3];
         vec3f screen_coords[3];
         vec2f texts[3];
         for (int j = 0; j < 3; j++) {
             world_coords[j] = model.vert(i, j);
-            screen_coords[j] = GL::world2screen(world_coords[j], ((Render *) render)->getWidth(),
-                                                ((Render *) render)->getHeight());
+            screen_coords[j] = GL::world2screen(world_coords[j]);
             texts[j] = model.uv(i, j);
         }
         ((Render *) render)->triangle(screen_coords, texts, &model);

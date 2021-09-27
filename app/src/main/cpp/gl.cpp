@@ -6,6 +6,30 @@
 #include <cstdlib>
 
 namespace GL {
+    matf<4, 4> ModelView;
+    matf<4, 4> Viewport;
+    matf<4, 4> Projection;
+
+    void viewport(const int x, const int y, const int w, const int h) {
+        Viewport = {{{w / 2.f, 0, 0, x + w / 2.f}, {0, h / 2.f, 0, y + h /
+                                                                       2.f}, {0, 0, 1, 0}, {0, 0, 0, 1}}};
+    }
+
+    void projection(
+            const float coeff) { // check https://github.com/ssloy/tinyrenderer/wiki/Lesson-4-Perspective-projection
+        Projection = {{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, coeff, 1}}};
+    }
+
+    void lookat(const vec3f eye, const vec3f center,
+                const vec3f up) { // check https://github.com/ssloy/tinyrenderer/wiki/Lesson-5-Moving-the-camera
+        vec3f z = (eye - center).normalize();
+        vec3f x = cross(up, z).normalize();
+        vec3f y = cross(z, x).normalize();
+        matf<4, 4> Minv = {{{x.x, x.y, x.z, 0}, {y.x, y.y, y.z, 0}, {z.x, z.y, z.z, 0}, {0, 0, 0, 1}}};
+        matf<4, 4> Tr = {{{1, 0, 0, -center.x}, {0, 1, 0, -center.y}, {0, 0, 1, -center.z}, {0, 0, 0, 1}}};
+        ModelView = Minv * Tr;
+    }
+
     void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor &color) {
         bool changeXY = false;
         if (abs(x1 - x0) < abs(y1 - y0)) {
@@ -109,7 +133,11 @@ namespace GL {
         }
     }
 
-    vec3f world2screen(vec3f v, int width, int height) {
-        return vec3f(int((v.x + 1.) * width / 2. + 0.5), int((v.y + 1.) * height / 2. + 0.5), v.z);
+    vec3f world2screen(vec3f v) {
+        vec4f gl_vertex = embed<4>(v); // embed Vec3f to homogenius coordinates
+        gl_vertex =
+                Viewport * Projection * ModelView * gl_vertex; // transform it to screen coordinates
+        vec3f v3 = proj<3>(gl_vertex / gl_vertex[3]); // transfromed vec3f vertex
+        return vec3f(int(v3.x + .5), int(v3.y + .5), v3.z);
     }
 }

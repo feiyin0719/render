@@ -308,6 +308,8 @@ typedef vec<4, int> vec4;
 typedef vec<2, float> vec2f;
 typedef vec<3, float> vec3f;
 typedef vec<4, float> vec4f;
+template<int nrows, int ncols>
+using matf = mat<nrows, ncols, float>;
 
 template<typename T>
 vec<3, T> cross(const vec<3, T> &v1, const vec<3, T> &v2) {
