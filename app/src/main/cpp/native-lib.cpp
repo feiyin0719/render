@@ -66,12 +66,8 @@ Java_com_iffly_render_Render_triangle(JNIEnv *env, jobject thiz, jlong render, j
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong render,
-                                          jstring file_name) {
-    jboolean iscopy;
-    const char *mfile = env->GetStringUTFChars(file_name, &iscopy);
-    std::string data(mfile);
-    env->ReleaseStringUTFChars(file_name, mfile);
+Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong render) {
+
     int width = ((Render *) render)->getWidth();
     int height = ((Render *) render)->getHeight();
     const vec3f light_dir(1, 1, 1); // light source
@@ -82,25 +78,17 @@ Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong rende
     GL::viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4); // build the Viewport matrix
     GL::projection(-1.f / (eye - center).norm());               // build the Projection matrix
 
-    Model model(data);
-    for (int i = 0; i < model.nfaces(); i++) {
-        vec3f world_coords[3];
-        vec3f screen_coords[3];
-        vec2f texts[3];
-        for (int j = 0; j < 3; j++) {
-            world_coords[j] = model.vert(i, j);
-            screen_coords[j] = GL::world2screen(world_coords[j]);
-            texts[j] = model.uv(i, j);
-        }
-        ((Render *) render)->triangle(screen_coords, texts, &model);
+    ((Render *) render)->renderModels();
 
-//        vec3f norm = cross(world_coords[2] - world_coords[0], world_coords[1] - world_coords[0]);
-//        norm.normalize();
-//        float intensity = light * norm;
-//        if (intensity > 0) {
-//            TGAColor color(255 * intensity, 255 * intensity, 255 * intensity, 255);
-//            ((Render *) render)->triangle(screen_coords, color);
-//        }
-    }
+
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_iffly_render_Render_loadModel(JNIEnv *env, jobject thiz, jlong render, jstring file_name) {
+    jboolean iscopy;
+    const char *mfile = env->GetStringUTFChars(file_name, &iscopy);
+    std::string fileName(mfile);
+    env->ReleaseStringUTFChars(file_name, mfile);
+    ((Render *) render)->addModel(fileName);
 
 }

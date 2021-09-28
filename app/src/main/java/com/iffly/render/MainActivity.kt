@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.iffly.render.databinding.ActivityMainBinding
 import java.io.File
@@ -37,9 +38,11 @@ class MainActivity : AppCompatActivity() {
 //        render.line(10, 10, 10, 100, 0xff00ffff)
 //        render.line(10, 10, 100, 10, 0xffff00ff)
 //        render.triangle(10, 10, 30, 10, 30, 50, 0xffff0000)
-            render.renderObject(
-                fileName = file.absolutePath,
-            )
+            render.loadModel(fileName = file.absolutePath)
+            val startTime = System.currentTimeMillis()
+            render.renderObject()
+            val delta = System.currentTimeMillis() - startTime
+            Log.i("myyf", "time:$delta")
             render.unlock()
             val bitmap = Bitmap.createBitmap(
                 render.bitmap.width,

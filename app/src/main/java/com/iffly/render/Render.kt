@@ -28,8 +28,12 @@ class Render(val width: Int, val height: Int) {
         triangle(nativeAddr, x0, y0, x1, y1, x2, y2, color)
     }
 
-    fun renderObject(fileName: String) {
-        renderObject(nativeAddr, fileName)
+    fun renderObject() {
+        renderObject(nativeAddr)
+    }
+
+    fun loadModel(fileName: String) {
+        loadModel(nativeAddr, fileName)
     }
 
     fun lock() {
@@ -58,9 +62,13 @@ class Render(val width: Int, val height: Int) {
         color: Long
     )
 
-    external fun renderObject(
+    external fun loadModel(
         nativeAddr: Long,
         fileName: String
+    )
+
+    external fun renderObject(
+        nativeAddr: Long
     )
 
     external fun lock(nativeAddr: Long)

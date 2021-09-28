@@ -19,6 +19,8 @@ protected:
 
     void init();
 
+    std::vector<Model *> models;
+
 public:
     Render(int width, int height);
 
@@ -27,6 +29,12 @@ public:
     virtual void triangle(vec3f *u, TGAColor &color);
 
     virtual void triangle(vec3f *u, vec2f *texts, Model *model);
+
+    virtual void addModel(std::string fileName);
+
+    virtual void renderModels();
+
+    virtual void renderModel(Model &model);
 
     virtual void lock();
 

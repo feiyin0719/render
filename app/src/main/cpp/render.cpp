@@ -31,6 +31,40 @@ void Render::triangle(vec3f *u, vec2f *texts, Model *model) {
     GL::triangle(u, zbuffer, *(this->image), texts, model);
 }
 
+void Render::addModel(std::string fileName) {
+    Model *model = new Model(fileName);
+    models.push_back(model);
+}
+
+void Render::renderModels() {
+    for (auto iter = models.cbegin(); iter != models.cend(); iter++) {
+        Model model = *(*iter);
+        renderModel(model);
+    }
+}
+
+void Render::renderModel(Model &model) {
+    for (int i = 0; i < model.nfaces(); i++) {
+        vec3f world_coords[3];
+        vec3f screen_coords[3];
+        vec2f texts[3];
+        for (int j = 0; j < 3; j++) {
+            world_coords[j] = model.vert(i, j);
+            screen_coords[j] = GL::world2screen(world_coords[j]);
+            texts[j] = model.uv(i, j);
+        }
+        triangle(screen_coords, texts, &model);
+
+//        vec3f norm = cross(world_coords[2] - world_coords[0], world_coords[1] - world_coords[0]);
+//        norm.normalize();
+//        float intensity = light * norm;
+//        if (intensity > 0) {
+//            TGAColor color(255 * intensity, 255 * intensity, 255 * intensity, 255);
+//            ((Render *) render)->triangle(screen_coords, color);
+//        }
+    }
+}
+
 void Render::lock() {
     if (this->image != nullptr)
         this->image->lock();
@@ -46,4 +80,5 @@ Render::~Render() {
         delete this->image;
     if (this->zbuffer != nullptr)
         delete this->zbuffer;
+
 }
