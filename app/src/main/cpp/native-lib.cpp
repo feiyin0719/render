@@ -66,19 +66,10 @@ Java_com_iffly_render_Render_triangle(JNIEnv *env, jobject thiz, jlong render, j
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong render) {
-
-    int width = ((Render *) render)->getWidth();
-    int height = ((Render *) render)->getHeight();
-    const vec3f light_dir(1, 1, 1); // light source
-    const vec3f eye(1, 1, 3); // camera position
-    const vec3f center(0, 0, 0); // camera direction
-    const vec3f up(0, 1, 0); // camera up vector
-    GL::lookat(eye, center, up);                            // build the ModelView matrix
-    GL::viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4); // build the Viewport matrix
-    GL::projection(-1.f / (eye - center).norm());               // build the Projection matrix
-
-    ((Render *) render)->renderModels();
+Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong renderptr) {
+    Render *render = ((Render *) renderptr);
+    render->initViewPort();
+    render->renderModels();
 
 
 }
