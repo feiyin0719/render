@@ -68,7 +68,6 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_iffly_render_Render_renderObject(JNIEnv *env, jobject thiz, jlong renderptr) {
     Render *render = ((Render *) renderptr);
-    render->initViewPort();
     render->renderModels();
 
 

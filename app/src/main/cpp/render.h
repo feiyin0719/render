@@ -4,6 +4,7 @@
 #include "tgaimage.h"
 #include "geometry.h"
 #include "model.h"
+#include "camera.h"
 
 #ifndef RENDER_RENDER_H
 #define RENDER_RENDER_H
@@ -22,11 +23,8 @@ protected:
     std::vector<std::shared_ptr<Model>> models;
 
     vec3f *light_dir; // light source
-    vec3f *eye; // camera position
-    vec3f *center; // camera direction
-    vec3f *up; // camera up vector
+    Camera camera;
 
-    matf<4, 4> ModelView;
     matf<4, 4> Viewport;
     matf<4, 4> Projection;
 
@@ -35,7 +33,6 @@ protected:
     void projection(
             const float coeff);
 
-    void lookat();
 
 public:
     Render(int width, int height);
@@ -58,8 +55,6 @@ public:
 
     virtual void clear();
 
-    void initViewPort();
-
     void moveEye(float dx, float dy, float dz);
 
     virtual int getWidth() {
@@ -73,7 +68,8 @@ public:
     virtual vec3f world2screen(vec3f v) {
         vec4f gl_vertex = embed<4>(v); // embed Vec3f to homogenius coordinates
         gl_vertex =
-                Viewport * Projection * ModelView * gl_vertex; // transform it to screen coordinates
+                Viewport * Projection * camera.getModelView() *
+                gl_vertex; // transform it to screen coordinates
         vec3f v3 = proj<3>(gl_vertex / gl_vertex[3]); // transfromed vec3f vertex
         return vec3f(int(v3.x + .5), int(v3.y + .5), v3.z);
     }

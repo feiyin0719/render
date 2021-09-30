@@ -312,10 +312,9 @@ template<int nrows, int ncols>
 using matf = mat<nrows, ncols, float>;
 
 template<typename T>
-vec<3, T> cross(const vec<3, T> &v1, const vec<3, T> &v2) {
-    return vec<3, T>{v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z,
-                     v1.x * v2.y - v1.y * v2.x};
-}
+vec<3, T> cross(const vec<3, T> &v1, const vec<3, T> &v2);
+
+matf<4, 4> lookAt(vec3f &eye, vec3f &center, vec3f &up);
 
 #endif //__GEOMETRY_H__
 
