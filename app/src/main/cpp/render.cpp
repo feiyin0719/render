@@ -32,6 +32,12 @@ void Render::initViewPort() {
     projection(-1.f / (*eye - *center).norm());
 }
 
+void Render::moveEye(float dx, float dy, float dz) {
+    eye->x += dx;
+    eye->y += dy;
+    eye->z += dz;
+}
+
 
 Render::Render(int width, int height) {
     this->image = new TGAImage(width, height, 4);
@@ -46,7 +52,7 @@ void Render::init() {
     this->zbuffer = new float[getWidth() * getHeight()];
     for (int i = getHeight() * getWidth(); i--; zbuffer[i] = -std::numeric_limits<float>::max());
     light_dir = new vec3f(1, 1, 1);
-    eye = new vec3f(1, 1, 3);
+    eye = new vec3f(2, 1, 3);
     center = new vec3f(0, 0, 0);
     up = new vec3f(0, 1, 0);
 }
@@ -69,6 +75,7 @@ void Render::addModel(std::string fileName) {
 }
 
 void Render::renderModels() {
+    for (int i = getHeight() * getWidth(); i--; zbuffer[i] = -std::numeric_limits<float>::max());
     for (auto iter = models.cbegin(); iter != models.cend(); iter++) {
         Model model = *(*iter);
         renderModel(model);
@@ -107,6 +114,9 @@ void Render::unlock() {
         this->image->unlock();
 }
 
+void Render::clear() {
+    this->image->clear();
+}
 
 Render::~Render() {
     if (this->image != nullptr)

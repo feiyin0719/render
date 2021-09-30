@@ -56,7 +56,11 @@ public:
 
     virtual void unlock();
 
+    virtual void clear();
+
     void initViewPort();
+
+    void moveEye(float dx, float dy, float dz);
 
     virtual int getWidth() {
         return image->get_width();

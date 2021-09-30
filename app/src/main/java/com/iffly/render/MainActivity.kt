@@ -1,8 +1,5 @@
 package com.iffly.render
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -32,30 +29,26 @@ class MainActivity : AppCompatActivity() {
                 copyAssetsToCache("african_head_diffuse.tga", textureFile)
             }
             val render: Render = Render(600, 600)
-            render.lock()
+            render.loadModel(fileName = file.absolutePath)
+            while (true) {
+                render.moveEye(-2f, -1f, -3f)
+                render.lock()
+                render.clear()
 //        render.line(10, 10, 100, 200, 0xffff0000)
 //        render.line(10, 10, 200, 100, 0xff0000ff)
 //        render.line(10, 10, 10, 100, 0xff00ffff)
 //        render.line(10, 10, 100, 10, 0xffff00ff)
 //        render.triangle(10, 10, 30, 10, 30, 50, 0xffff0000)
-            render.loadModel(fileName = file.absolutePath)
-            val startTime = System.currentTimeMillis()
-            render.renderObject()
-            val delta = System.currentTimeMillis() - startTime
-            Log.i("myyf", "time:$delta")
-            render.unlock()
-            val bitmap = Bitmap.createBitmap(
-                render.bitmap.width,
-                render.bitmap.height,
-                Bitmap.Config.ARGB_8888
-            )
-            val canvas = Canvas(bitmap)
-            val matrix = Matrix()
+                val startTime = System.currentTimeMillis()
+                render.renderObject()
+                val delta = System.currentTimeMillis() - startTime
+                Log.i("myyf", "time:$delta")
+                render.unlock()
 
-            matrix.postRotate(180f, bitmap.width / 2f, bitmap.height / 2f)
-            canvas.drawBitmap(render.bitmap, matrix, null)
-            binding.imageView.post {
-                binding.imageView.setImageBitmap(bitmap)
+                binding.imageView.post {
+                    binding.imageView.setImageBitmap(render.bitmap)
+                }
+                Thread.sleep(32)
             }
             render.destroy()
 

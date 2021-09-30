@@ -43,3 +43,11 @@ TGAColor AndroidImage::get(const int x, const int y) const {
     }
     return TGAColor();
 }
+
+void AndroidImage::clear() {
+    if (this->bitmapPixs != nullptr) {
+        for (int x = 0; x < width; ++x)
+            for (int y = 0; y < height; ++y)
+                bitmapPixs[y * width + x] = 0xffffffff;
+    }
+}

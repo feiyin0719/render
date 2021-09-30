@@ -113,7 +113,7 @@ public:
 
     std::uint8_t *buffer();
 
-    void clear();
+    virtual void clear();
 };
 
 #endif //__IMAGE_H__

@@ -83,3 +83,14 @@ Java_com_iffly_render_Render_loadModel(JNIEnv *env, jobject thiz, jlong render, 
     ((Render *) render)->addModel(fileName);
 
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_iffly_render_Render_moveEye(JNIEnv *env, jobject thiz, jlong native_addr, jfloat dx,
+                                     jfloat dy, jfloat dz) {
+    ((Render *) native_addr)->moveEye(dx, dy, dz);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_iffly_render_Render_clear(JNIEnv *env, jobject thiz, jlong native_addr) {
+    ((Render *) native_addr)->clear();
+}

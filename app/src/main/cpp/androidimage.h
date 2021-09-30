@@ -26,6 +26,8 @@ public:
 
     virtual void unlock();
 
+    virtual void clear();
+
     ~AndroidImage() {
         env->DeleteGlobalRef(bitmap);
     }

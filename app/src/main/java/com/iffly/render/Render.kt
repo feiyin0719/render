@@ -16,6 +16,10 @@ class Render(val width: Int, val height: Int) {
         line(nativeAddr, x0, y0, x1, y1, color)
     }
 
+    fun moveEye(dx: Float, dy: Float, dz: Float) {
+        moveEye(nativeAddr, dx, dy, dz)
+    }
+
     fun triangle(
         x0: Int,
         y0: Int,
@@ -42,6 +46,10 @@ class Render(val width: Int, val height: Int) {
 
     fun unlock() {
         unlock(nativeAddr)
+    }
+
+    fun clear() {
+        clear(nativeAddr)
     }
 
     fun destroy() {
@@ -77,6 +85,10 @@ class Render(val width: Int, val height: Int) {
     external fun init(bitmap: Bitmap): Long
 
     external fun destroy(nativeAddr: Long)
+
+    external fun moveEye(nativeAddr: Long, dx: Float, dy: Float, dz: Float)
+
+    external fun clear(nativeAddr: Long)
 
 
     companion object {
