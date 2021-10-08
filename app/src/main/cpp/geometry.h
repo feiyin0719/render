@@ -316,5 +316,7 @@ vec<3, T> cross(const vec<3, T> &v1, const vec<3, T> &v2);
 
 matf<4, 4> lookAt(vec3f &eye, vec3f &center, vec3f &up);
 
+float radians(float degree);
+
 #endif //__GEOMETRY_H__
 

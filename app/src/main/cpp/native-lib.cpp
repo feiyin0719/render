@@ -84,12 +84,17 @@ Java_com_iffly_render_Render_loadModel(JNIEnv *env, jobject thiz, jlong render, 
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_iffly_render_Render_moveEye(JNIEnv *env, jobject thiz, jlong native_addr, jfloat dx,
-                                     jfloat dy, jfloat dz) {
-    ((Render *) native_addr)->moveEye(dx, dy, dz);
+Java_com_iffly_render_Render_updateCamera(JNIEnv *env, jobject thiz, jlong native_addr, jint dir) {
+    ((Render *) native_addr)->updateCamera(dir);
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_iffly_render_Render_clear(JNIEnv *env, jobject thiz, jlong native_addr) {
     ((Render *) native_addr)->clear();
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_iffly_render_Render_updateCameraYawPitch(JNIEnv *env, jobject thiz, jlong native_addr,
+                                                  jfloat dx, jfloat dy, jboolean constrainPitch) {
+    ((Render *) native_addr)->updateYawPitch(dx, dy, constrainPitch);
 }

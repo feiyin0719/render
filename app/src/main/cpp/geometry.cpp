@@ -21,3 +21,7 @@ matf<4, 4> lookAt(vec3f &eye, vec3f &center, vec3f &up) {
     return Minv * Tr;
 }
 
+float radians(float degree) {
+    return degree / 180 * 3.1415926;
+}
+

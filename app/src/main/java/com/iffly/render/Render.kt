@@ -16,8 +16,16 @@ class Render(val width: Int, val height: Int) {
         line(nativeAddr, x0, y0, x1, y1, color)
     }
 
-    fun moveEye(dx: Float, dy: Float, dz: Float) {
-        moveEye(nativeAddr, dx, dy, dz)
+    fun updateCamera(dir: Int) {
+        updateCamera(nativeAddr, dir)
+    }
+
+    fun updateCameraYawPitch(
+        dx: Float,
+        dy: Float,
+        constrainPitch: Boolean = true
+    ) {
+        updateCameraYawPitch(nativeAddr, dx, dy, constrainPitch)
     }
 
     fun triangle(
@@ -86,7 +94,14 @@ class Render(val width: Int, val height: Int) {
 
     external fun destroy(nativeAddr: Long)
 
-    external fun moveEye(nativeAddr: Long, dx: Float, dy: Float, dz: Float)
+    external fun updateCamera(nativeAddr: Long, dir: Int)
+
+    external fun updateCameraYawPitch(
+        nativeAddr: Long,
+        dx: Float,
+        dy: Float,
+        constrainPitch: Boolean
+    )
 
     external fun clear(nativeAddr: Long)
 

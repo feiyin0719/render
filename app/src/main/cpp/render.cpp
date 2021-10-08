@@ -16,8 +16,13 @@ void Render::projection(
 }
 
 
-void Render::moveEye(float dx, float dy, float dz) {
+void Render::updateCamera(int dir) {
+    camera.updateCamera(dir);
+    projection(camera.getCoffee());
+}
 
+void Render::updateYawPitch(float dx, float dy, bool constrainPitch) {
+    camera.updateYawPitch(dx, dx, constrainPitch);
 }
 
 

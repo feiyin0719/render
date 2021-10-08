@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             val render: Render = Render(600, 600)
             render.loadModel(fileName = file.absolutePath)
             while (true) {
-                render.moveEye(-2f, -1f, -3f)
+
                 render.lock()
                 render.clear()
 //        render.line(10, 10, 100, 200, 0xffff0000)
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                 binding.imageView.post {
                     binding.imageView.setImageBitmap(render.bitmap)
                 }
+                render.updateCameraYawPitch(-5f, -5f)
                 Thread.sleep(32)
             }
             render.destroy()

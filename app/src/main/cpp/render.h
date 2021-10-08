@@ -55,7 +55,9 @@ public:
 
     virtual void clear();
 
-    void moveEye(float dx, float dy, float dz);
+    void updateCamera(int dir);
+
+    void updateYawPitch(float dx, float dy, bool constrainPitch = true);
 
     virtual int getWidth() {
         return image->get_width();

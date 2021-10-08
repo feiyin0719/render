@@ -9,20 +9,37 @@
 
 class Camera {
 private:
-    vec3f *eye; // camera position
-    vec3f *center; // camera direction
-    vec3f *up; // camera up vector
+    vec3f Position;
+    vec3f TargetPositon;
+    vec3f Front;
+    vec3f Up;
+    vec3f Right;
+    vec3f WorldUp;
+    // 欧拉角
+    float Yaw;
+    float Pitch;
+    float Roll;
+
+    void updateCameraVectors();
+
+
     matf<4, 4> ModelView;
+    const float SPEED = 0.5f;
+    const float DEGREE_SPEED = 0.1f;
 public:
     Camera();
 
-    Camera(vec3f eye, vec3f center, vec3f up);
+    Camera(vec3f position, vec3f target, vec3f up, float pitch, float yaw, float roll);
 
     ~Camera();
 
     matf<4, 4> &getModelView();
 
     float getCoffee();
+
+    void updateCamera(int dir);
+
+    void updateYawPitch(float dx, float dy, bool constrainPitch = true);
 
 };
 
