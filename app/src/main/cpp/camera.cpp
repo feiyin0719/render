@@ -41,7 +41,6 @@ void Camera::updateCamera(int dir) {
     } else if (dir == 1) {
         this->Position = Position - Front * SPEED;
     } else if (dir == 2) {
-
         Position = Position + Right * SPEED;
     } else if (dir == 3) {
         Position = Position - Right * SPEED;

@@ -25,7 +25,7 @@ private:
 
     matf<4, 4> ModelView;
     const float SPEED = 0.5f;
-    const float DEGREE_SPEED = 0.1f;
+    const float DEGREE_SPEED = 1;
 public:
     Camera();
 
